@@ -1,24 +1,26 @@
 import express from "express";
+import cors from "cors";
+
 import authRouter from "./routes/auth.routes";
+import taskRoutes from "./routes/task.routes";
+import { verifyToken } from "./middleware/auth.middleware";
 
 const app = express();
 
+// ✅ Middlewares
+app.use(cors());
 app.use(express.json());
 
-// routes
+// ✅ Routes
 app.use("/auth", authRouter);
+app.use("/tasks", taskRoutes);
 
+// ✅ Test route
 app.get("/", (req, res) => {
   res.send("Backend is running fine");
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
-});
-
-
-import { verifyToken } from "./middleware/auth.middleware";
-
+// ✅ Protected route
 app.get("/protected", verifyToken, (req, res) => {
   res.json({
     message: "You accessed protected route 🎉",
@@ -26,11 +28,7 @@ app.get("/protected", verifyToken, (req, res) => {
   });
 });
 
-
-import taskRoutes from "./routes/task.routes";
-
-app.use("/tasks", taskRoutes);
-
+// ✅ Single PORT
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

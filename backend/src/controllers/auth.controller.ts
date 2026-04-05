@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserAccount, loginUser } from "../services/auth.service";
+import { createUserAccount, loginUser, refreshAccessToken, logoutUser } from "../services/auth.service";
 
 export const registerHandler = async (req: Request, res: Response) => {
   try {
@@ -37,12 +37,50 @@ export const loginHandler = async (req: Request, res: Response) => {
       success: true,
       message: "Login successful",
       data: {
-        token: result.token,
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
         user: safeUser,
       },
     });
   } catch (err: any) {
     res.status(401).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+export const refreshHandler = async (req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.body;
+
+    const accessToken = await refreshAccessToken(refreshToken);
+
+    res.status(200).json({
+      success: true,
+      accessToken,
+    });
+  } catch (err: any) {
+    res.status(401).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+
+export const logoutHandler = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+
+    await logoutUser(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (err: any) {
+    res.status(400).json({
       success: false,
       message: err.message,
     });

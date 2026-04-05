@@ -20,6 +20,7 @@ model User {
   userTasks Task[]
   createdOn DateTime @default(now())
   updatedAt DateTime @updatedAt
+  refreshToken String?
 }
 
 model Task {

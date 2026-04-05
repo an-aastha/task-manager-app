@@ -14,10 +14,29 @@ export const createTask = async (userId: string, title: string, description?: st
   return task;
 };
 
-export const getUserTasks = async (userId: string) => {
+export const getUserTasks = async (
+  userId: string,
+  query: any
+) => {
+  const { page = 1, limit = 5, status, search } = query;
+
+  const skip = (Number(page) - 1) * Number(limit);
+
   const tasks = await db.task.findMany({
-    where: { userId },
-    orderBy: { createdOn: "desc" },
+    where: {
+      userId,
+      ...(status && { status }),
+      ...(search && {
+        taskTitle: {
+          contains: search,
+        },
+      }),
+    },
+    skip,
+    take: Number(limit),
+    orderBy: {
+      createdOn: "desc",
+    },
   });
 
   return tasks;
@@ -28,11 +47,10 @@ export const updateTask = async (
   userId: string,
   data: any
 ) => {
-  // First check if task belongs to user
   const existingTask = await db.task.findFirst({
     where: {
       id: taskId,
-      userId: userId,
+      userId,
     },
   });
 
@@ -40,12 +58,14 @@ export const updateTask = async (
     throw new Error("Task not found or unauthorized");
   }
 
-  // Now update
   const updatedTask = await db.task.update({
     where: {
       id: taskId,
     },
-    data,
+    data: {
+      taskTitle: data.taskTitle,
+      description: data.description,
+    },
   });
 
   return updatedTask;
@@ -71,4 +91,27 @@ export const deleteTask = async (taskId: string, userId: string) => {
   });
 
   return deletedTask;
+};
+
+export const toggleTaskStatus = async (taskId: string, userId: string) => {
+  const task = await db.task.findFirst({
+    where: {
+      id: taskId,
+      userId,
+    },
+  });
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  const newStatus =
+    task.status === "COMPLETED" ? "PENDING" : "COMPLETED";
+
+  const updatedTask = await db.task.update({
+    where: { id: taskId },
+    data: { status: newStatus },
+  });
+
+  return updatedTask;
 };
