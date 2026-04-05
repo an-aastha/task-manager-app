@@ -13,7 +13,7 @@ type Task = {
 const refreshAccessToken = async () => {
   const refreshToken = localStorage.getItem("refreshToken");
 
-  const res = await fetch("http://localhost:5000/auth/refresh", {
+  const res = await fetch("https://task-manager-app-scsx.onrender.com/auth/refresh", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export default function Dashboard() {
   const fetchTasks = async () => {
     let token = localStorage.getItem("accessToken");
 
-    let url = `http://localhost:5000/tasks?page=1&limit=10`;
+    let url = `https://task-manager-app-scsx.onrender.com/tasks?page=1&limit=10`;
 
     if (search) url += `&search=${search}`;
     if (status) url += `&status=${status}`;
@@ -99,7 +99,7 @@ export default function Dashboard() {
   const addTask = async () => {
     let token = localStorage.getItem("accessToken");
 
-    let res = await fetch("http://localhost:5000/tasks", {
+    let res = await fetch("https://task-manager-app-scsx.onrender.com/tasks", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export default function Dashboard() {
     if (res.status === 401) {
       token = await refreshAccessToken();
 
-      res = await fetch("http://localhost:5000/tasks", {
+      res = await fetch("https://task-manager-app-scsx.onrender.com/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,7 +139,7 @@ export default function Dashboard() {
   const deleteTask = async (id: string) => {
     const token = localStorage.getItem("accessToken");
 
-    await fetch(`http://localhost:5000/tasks/${id}`, {
+    await fetch(`https://task-manager-app-scsx.onrender.com/tasks/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -152,7 +152,7 @@ export default function Dashboard() {
   const toggleTask = async (id: string) => {
     const token = localStorage.getItem("accessToken");
 
-    await fetch(`http://localhost:5000/tasks/${id}/toggle`, {
+    await fetch(`https://task-manager-app-scsx.onrender.com/tasks/${id}/toggle`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -165,7 +165,7 @@ export default function Dashboard() {
   const updateTaskHandler = async (id: string) => {
     const token = localStorage.getItem("accessToken");
 
-    const res = await fetch(`http://localhost:5000/tasks/${id}`, {
+    const res = await fetch(`https://task-manager-app-scsx.onrender.com/tasks/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

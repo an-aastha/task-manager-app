@@ -10,7 +10,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
-    const res = await fetch("http://localhost:5000/auth/register", {
+    const res = await fetch("https://task-manager-app-scsx.onrender.com/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

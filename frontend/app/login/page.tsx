@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    const res = await fetch("http://localhost:5000/auth/login", {
+    const res = await fetch("https://task-manager-app-scsx.onrender.com/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export default function LoginPage() {
     localStorage.setItem("accessToken", data.data.accessToken);
     localStorage.setItem("refreshToken", data.data.refreshToken);
     localStorage.setItem("user", JSON.stringify(data.data.user));
-    
+
     router.push("/dashboard");
   };
 
